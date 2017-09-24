@@ -15,7 +15,7 @@ echo $PYTHONPATH
 which python
 
 echo "Updating tensorflow"
-cd ~/extcode/tensorflow
+cd ~/tensorflow
 git pull origin master
 
 echo "Cleaning up old installs"
@@ -24,20 +24,12 @@ rm -rf ~/.cache/bazel
 rm -f /tmp/tensorflow_pkg/tensorflow*.whl
 
 echo "Building tensorflow"
-yes "" | ./configure
+#soyes "" | ./configure
 
 if [ $1 = "tf_bench_36" ]; then
-    bazel build -c opt --copt=-msse4.1 --copt=-msse4.2 --copt=-msse3 --copt=-mfpmath=both -k //tensorflow/tools/pip_package:build_pip_package
-elif [ $1 = "tf_bench_36_mkl_1" ]; then
-    bazel build --config=mkl --copt="-DEIGEN_USE_VML" -c opt -k //tensorflow/tools/pip_package:build_pip_package
-elif [ $1 = "tf_bench_36_mkl_2" ]; then
-    bazel build --config=mkl --copt="-DEIGEN_USE_VML" -c opt --copt=-msse4.1 --copt=-msse4.2 --copt=-msse3 --copt=-mfpmath=both -k //tensorflow/tools/pip_package:build_pip_package
-elif [ $1 = "tf_bench_27" ]; then
-    bazel build -c opt --copt=-msse4.1 --copt=-msse4.2 --copt=-msse3 -k //tensorflow/tools/pip_package:build_pip_package
-elif [ $1 = "tf_bench_27_mkl_1" ]; then
-    bazel build --config=mkl --copt="-DEIGEN_USE_VML" -c opt -k //tensorflow/tools/pip_package:build_pip_package
-elif [ $1 = "tf_bench_27_mkl_2" ]; then
-    bazel build --config=mkl --copt="-DEIGEN_USE_VML" -c opt --copt=-msse4.1 --copt=-msse4.2 --copt=-msse3 --copt=-mfpmath=both -k //tensorflow/tools/pip_package:build_pip_package
+    bazel build -c opt --config=cuda --copt=-msse4.1 --copt=-msse4.2 --copt=-msse3 --copt=-mfma --copt=-mavx --copt=-mavx2 -k //tensorflow/tools/pip_package:build_pip_package
+elif [ $1 = "tf_bench_36_mkl" ]; then
+    bazel build -c opt --config=cuda --config=mkl --copt="-DEIGEN_USE_VML" --copt=-msse4.1 --copt=-msse4.2 --copt=-msse3 --copt=-mfma --copt=-mavx --copt=-mavx2 -k //tensorflow/tools/pip_package:build_pip_package
 else
     echo "No valid env"
 fi
@@ -53,7 +45,7 @@ echo "Installing keras"
 pip install keras
 
 echo "Running mnist"
-python mnist_cnn.py
+time python mnist_cnn.py 20 'l'
 
 echo "Running cifar"
-python cifar10_cnn.py
+time python cifar10_cnn.py 20 'l'

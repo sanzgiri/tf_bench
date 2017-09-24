@@ -6,12 +6,14 @@ It gets down to 0.65 test logloss in 25 epochs, and down to 0.55 after 50 epochs
 '''
 
 from __future__ import print_function
+import sys
 import keras
 from keras.datasets import cifar10
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+from keras import backend as K
 
 import os
 import pickle
@@ -24,6 +26,14 @@ data_augmentation = True
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'keras_cifar10_trained_model.h5'
+
+epochs = int(sys.argv[1])
+
+if (sys.argv[2] == 'f'):
+    K.set_image_data_format('channels_first')
+elif (sys.argv[2] == 'l'):
+    K.set_image_data_format('channels_last')
+
 
 # The data, shuffled and split between train and test sets:
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -103,6 +113,7 @@ else:
                                      batch_size=batch_size),
                         steps_per_epoch=x_train.shape[0] // batch_size,
                         epochs=epochs,
+                        verbose=0,
                         validation_data=(x_test, y_test))
 
 # Save model and weights
