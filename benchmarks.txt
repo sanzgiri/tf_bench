@@ -1,0 +1,31 @@
+
+Instructions supported on i7-7700: sse4.1, sse4.2, sse3, avx, avx2, fma
+Getting better performance with channels last compared to channels first (also get GPU utilof 50% vs 85%)
+Base-channels-last seems to work best, no advantage to self-compiling the build
+
+Note that to compile with NKL, need to have libmklml.so
+- Clone https://github.com/01org/mkl-dnn
+- In the cloned repo, run
+cd scripts && ./prepare_mkl.sh && cd ..
+- Add the libraries to LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ashutosh/mkl-dnn/external/mklml_lnx_2018.0.20170720/lib
+
+MNIST: (20 epochs) (channels-last)
+- Base: 84 sec
+- Instr: 78 sec
+- Instr + MKl: 80 sec 
+
+MNIST: (20 epochs) (channels-first)
+- Base: 176 sec
+- Instr: 90 sec
+- Instr + MKl: 88 sec 
+
+Cifar-10: (20 epochs) (channels-last)
+- Base: 201 sec
+- Instr: 221 sec
+- Instr + MKl: 220  sec 
+
+Cifar-10: (20 epochs) (channels-first)
+- Base: 303 sec
+- Instr: 217  sec
+- Instr + MKl: 216  sec 
