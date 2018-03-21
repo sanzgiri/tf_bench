@@ -24,7 +24,7 @@ rm -rf ~/.cache/bazel
 rm -f /tmp/tensorflow_pkg/tensorflow*.whl
 
 echo "Building tensorflow"
-#soyes "" | ./configure
+#yes "" | ./configure
 
 if [ $1 = "tf_bench_36" ]; then
     bazel build -c opt --config=cuda --copt=-msse4.1 --copt=-msse4.2 --copt=-msse3 --copt=-mfma --copt=-mavx --copt=-mavx2 -k //tensorflow/tools/pip_package:build_pip_package

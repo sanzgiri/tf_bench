@@ -29,3 +29,7 @@ Cifar-10: (20 epochs) (channels-first)
 - Base: 303 sec
 - Instr: 217  sec
 - Instr + MKl: 216  sec 
+
+With tensorflow 1.5, cuda 9.1, cudnn 7.0.5 (Instr)
+MNIST 20 epoch: 78 sec
+Cifar-10: 200 sec
